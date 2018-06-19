@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en" style="width:100%;height:100%;">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="http://res.zhangchao.online/lodash.min.js"></script>
+    <style>
+        .ball {
+            width: 100px;
+            height: 100px;
+            background: red;
+            border: 1px solid #fff;
+            position: absolute;
+        }
+
+        @keyframes mmBallMove {
+            0% {
+                left: 0
+            }
+            100% {
+                left: 50%
+            }
+        }
+
+        @keyframes mmBallMove2 {
+            0% {
+                left: 0
+            }
+            100% {
+                left: 50%
+            }
+        }
+    </style>
+</head>
+
+<body style="width:100%;height:100%;margin:0;">
+<div id="wrap" style="width:100%;height:100%;background: #eee;">
+
+</div>
+</body>
+<script>
+    (function(tar) {
+        if (!tar instanceof HTMLElement) {
+            throw new Error('目标元素必须为DOM元素');
+        }
+
+        // 公用函数
+        /*×
+         * 获取keyframe对象
+         * name 动画名称
+         * */
+        function getRule(name) {
+            var cssRule = [];
+            var ss = document.styleSheets;
+            var i = 0,
+                j = 0; //下标：i 外部样式 j 外部样式中某一项
+            _.forEach(ss, function(css) {
+                j = 0;
+                _.forEach(css.cssRules, function(rule) {
+                    if (rule.name === name && rule.type === CSSRule.KEYFRAMES_RULE) {
+                        cssRule[0] = i;
+                        cssRule[1] = j;
+                        cssRule[2] = rule;
+                    }
+                    j++;
+                });
+                i++;
+            });
+            return cssRule;
+        }
+        /*×
+         * 重新设置keyframe动画的内容
+         * name 动画名称 animate 动画内容
+         * */
+        function setKeyframe(name, animate) {
+            var css = document.styleSheets;
+            var cssRule = getRule(name);
+            css[cssRule[0]].deleteRule(cssRule[1]);
+            css[cssRule[0]].insertRule(animate, cssRule[1]);
+        }
+
+        // 声明全局变量
+        var wrap = tar, // 外框
+            wrapH = wrap.offsetHeight-100, // 外框的高度
+            wrapW = wrap.offsetWidth-100, // 外框的宽度
+            initX = 0;
+        initY = 0;
+        wrap.style.position = 'relative';
+
+        // 小球
+        var ball = document.createElement('div'),
+            ballStatus = 0;
+        ball.setAttribute('class', 'ball');
+        // ball.style.animation = 'mmBallMove 3s ease-in 0s 1 normal forwards';
+        wrap.appendChild(ball);
+
+        // 重新设定animation
+        function setAnimation(cfg) {
+            var css = '@keyframes mmBallMove {0%{left: ' + initX + 'px;top: ' + initY + 'px;}100%{left: ' + cfg.x + 'px;top: ' + cfg.y + 'px;}}';
+            setKeyframe('mmBallMove', css);
+            ball.style.animation = 'mmBallMove ' + cfg.duration + 's ease-in 0s 1 normal forwards';
+            initX = cfg.x;
+            initY = cfg.y;
+        }
+
+        function setAnimation2(cfg) {
+            var css = '@keyframes mmBallMove2 {0%{left: ' + initX + 'px;top: ' + initY + 'px;}100%{left: ' + cfg.x + 'px;top: ' + cfg.y + 'px;}}';
+            setKeyframe('mmBallMove2', css);
+            ball.style.animation = 'mmBallMove2 ' + cfg.duration + 's ease-in 0s 1 normal forwards';
+            initX = cfg.x;
+            initY = cfg.y;
+        }
+
+        // 计算下次坐标
+        var tarX = 0; // 目标点X
+        var tarY = 0; // 目标点Y
+        var xState = '+'; // x方向
+        var yState = '+'; // y方向
+        var tarPosition = 0; // 目标位置数
+        var num = 0; // 运动次数
+        function getCoordinate() {
+            var subtractX, subtractY, state;
+            if (tarX === 0) {
+                xState = '+';
+            } else if (tarX === wrapW) {
+                xState = '-';
+            }
+            if (tarY === 0) {
+                yState = '+';
+            } else if (tarY === wrapH) {
+                yState = '-';
+            }
+            if (xState === '+') {
+                subtractX = tarX === 0 ? wrapW : wrapW - tarX;
+            } else {
+                subtractX = tarX === wrapW ? wrapW : tarX;
+            }
+            if (yState === '+') {
+                subtractY = tarY === 0 ? wrapH : wrapH - tarY;
+            } else {
+                subtractY = tarY === wrapH ? wrapH : tarY;
+            }
+            tarPosition = subtractX >= subtractY ? subtractY : subtractX;
+            state = xState + yState;
+            switch (state) {
+                case '++':
+                    tarX += tarPosition;
+                    tarY += tarPosition;
+                    break;
+                case '-+':
+                    tarX -= tarPosition;
+                    tarY += tarPosition;
+                    break;
+                case '--':
+                    tarX -= tarPosition;
+                    tarY -= tarPosition;
+                    break;
+                case '+-':
+                    tarX += tarPosition;
+                    tarY -= tarPosition;
+                    break;
+            }
+            var _cfg = {
+                x: tarX,
+                y: tarY,
+                duration: tarPosition / 80
+            };
+            return _cfg;
+        }
+
+        setAnimation(getCoordinate());
+
+        ball.addEventListener('webkitAnimationEnd', function() {
+            if (num % 2 === 0) {
+                setAnimation2(getCoordinate());
+            } else {
+                setAnimation(getCoordinate());
+            }
+            num++;
+        });
+
+    })(document.getElementById('wrap'));
+</script>
+
+</html>
