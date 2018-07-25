@@ -1,0 +1,190 @@
+<!DOCTYPE html style="width:100%;height:100%">
+<html lang="zh">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Zhang Chao</title>
+  <script src="http://res.zhangchao.online/js/jquery.min.js"></script>
+  <style>
+    html,
+    body {
+      background-color: #303030;
+      height: 100%;
+    }
+
+    a,
+    a:hover,
+    a:active,
+    a:focus {
+      color: white;
+    }
+
+    img {
+      max-width: 300px;
+      border: 5px solid #ffffff;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+
+<body style="width:100%;height:100%">
+  <div class="container" style="margin: 0 auto; color: white; padding-top: 15px;">
+
+    <center>
+      <img src="https://images.unsplash.com/photo-1508557344244-0c3c025b92a3?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=f94c5fc58d29bb4fafd2312da8c02f84&auto=format&fit=crop&w=1056&q=80">
+    </center>
+
+    <div class="columns" style="max-width: 600px; margin: 0 auto;">
+
+      <div class="column">
+        <p>Blur
+          <span class="filter-value"></span>px</p>
+        <input id="blur" name="blur" class="control" type="range" min="0" max="20" value="0">
+      </div>
+
+      <div class="column">
+        <p>Brightness
+          <span class="filter-value"></span>%</p>
+        <input id="brightness" name="brightness" class="control" type="range" min="0" max="500" value="100">
+      </div>
+
+      <div class="column">
+        <p>Contrast
+          <span class="filter-value"></span>%</p>
+        <input id="contrast" name="contrast" class="control" type="range" min="0" max="300" value="100">
+      </div>
+
+    </div>
+
+    <div class="columns" style="max-width: 600px; margin: 0 auto;">
+
+      <div class="column">
+        <p>Grayscale
+          <span class="filter-value"></span>%</p>
+        <input id="grayscale" name="grayscale" class="control" type="range" min="0" max="100" value="0">
+      </div>
+
+      <div class="column">
+        <p>Hue Rotate
+          <span class="filter-value"></span>deg</p>
+        <input id="hue-rotate" name="hue-rotate" class="control" type="range" min="0" max="360" value="0">
+      </div>
+
+      <div class="column">
+        <p>Invert
+          <span class="filter-value"></span>%</p>
+        <input id="invert" name="invert" class="control" type="range" min="0" max="100" value="0">
+      </div>
+
+    </div>
+
+    <div class="columns" style="max-width: 600px; margin: 0 auto;">
+
+      <div class="column">
+        <p>Opacity
+          <span class="filter-value"></span>%</p>
+        <input id="opacity" name="opacity" class="control" type="range" min="0" max="100" value="100">
+      </div>
+
+      <div class="column">
+        <p>Saturate
+          <span class="filter-value"></span>%</p>
+        <input id="saturate" name="saturate" class="control" type="range" min="0" max="500" value="100">
+      </div>
+
+      <div class="column">
+        <p>Sepia
+          <span class="filter-value"></span>%</p>
+        <input id="sepia" name="sepia" class="control" type="range" min="0" max="100" value="0">
+      </div>
+
+    </div>
+
+    <div style="padding: 15px; text-align: center;">
+      <button class="button is-medium is-danger" type="button" onclick="reset();">RESET</button>
+      <br>
+      <br>
+      <a href="https://awik.io/css-filters" target="_blank">awik.io/css-filters</a>
+    </div>
+
+  </div>
+</body>
+<script>
+  var img;
+
+  var blur = 0;
+  var brightness = 100;
+  var contrast = 100;
+  var grayscale = 0;
+  var hueRotate = 0;
+  var invert = 0;
+  var opacity = 100;
+  var saturate = 100;
+  var sepia = 0;
+
+
+
+  $(document).ready(function () {
+
+    $('.control').on('input', update);
+  });
+
+  function update(ctrl) {
+
+    $(this).parent().find('.filter-value').html($(this).val());
+
+    blur = $('#blur').val();
+    brightness = $('#brightness').val();
+    contrast = $('#contrast').val();
+    grayscale = $('#grayscale').val();
+    hueRotate = $('#hue-rotate').val();
+    invert = $('#invert').val();
+    opacity = $('#opacity').val();
+    saturate = $('#saturate').val();
+    sepia = $('#sepia').val();
+
+    // Updating
+    $('img').css('filter', 'blur(' + blur + 'px) brightness(' + brightness + '%) contrast(' + contrast +
+      '%) grayscale(' + grayscale + '%) hue-rotate(' + hueRotate + 'deg) invert(' + invert + '%) opacity(' + opacity +
+      '%) saturate(' + saturate + '%) sepia(' + sepia + '%)');
+    $('img').css('-webkit-filter', 'blur(' + blur + 'px) brightness(' + brightness + '%) contrast(' + contrast +
+      '%) grayscale(' + grayscale + '%) hue-rotate(' + hueRotate + 'deg) invert(' + invert + '%) opacity(' + opacity +
+      '%) saturate(' + saturate + '%) sepia(' + sepia + '%)');
+  }
+
+  function reset() {
+
+    $('.filter-value').html('');
+
+    blur = 0;
+    brightness = 100;
+    contrast = 100;
+    grayscale = 0;
+    hueRotate = 0;
+    invert = 0;
+    opacity = 100;
+    saturate = 100;
+    sepia = 0;
+
+    $('#blur').val(blur);
+    $('#brightness').val(brightness);
+    $('#contrast').val(contrast);
+    $('#grayscale').val(grayscale);
+    $('#hue-rotate').val(hueRotate);
+    $('#invert').val(invert);
+    $('#opacity').val(opacity);
+    $('#saturate').val(saturate);
+    $('#sepia').val(sepia);
+
+    $('img').css('filter', 'blur(' + blur + 'px) brightness(' + brightness + '%) contrast(' + contrast +
+      '%) grayscale(' + grayscale + '%) hue-rotate(' + hueRotate + 'deg) invert(' + invert + '%) opacity(' + opacity +
+      '%) saturate(' + saturate + '%) sepia(' + sepia + '%)');
+    $('img').css('-webkit-filter', 'blur(' + blur + 'px) brightness(' + brightness + '%) contrast(' + contrast +
+      '%) grayscale(' + grayscale + '%) hue-rotate(' + hueRotate + 'deg) invert(' + invert + '%) opacity(' + opacity +
+      '%) saturate(' + saturate + '%) sepia(' + sepia + '%)');
+  }
+</script>
+
+</html>
